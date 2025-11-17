@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
+
+# --- 1. IMPORTS (Todo al principio) ---
 import os
 import io
 import threading
 import queue
 import requests
 from PIL import Image
-
-# Usamos ttkbootstrap en lugar de tkinter para un look profesional
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from tkinter import filedialog
 
-# --- LÓGICA DE PROCESAMIENTO (Tu script adaptado) ---
-# Estas funciones se ejecutarán en un hilo separado
+# --- 2. FUNCIONES DE LÓGICA (Aquí es donde van) ---
+# Estas son las funciones del archivo "standalone_functions.py"
 
 HEADERS = {"User-Agent": "resizer-downloader-gui/1.0"}
 TIMEOUT = 15
@@ -67,7 +67,9 @@ def process_image_entry(name, url, output_dir, final_size):
         
     return f"✅ Guardada: {name} en {out_path}"
 
-# --- CLASE DE LA APLICACIÓN (GUI) ---
+
+# --- 3. LA CLASE PRINCIPAL (Después de las funciones) ---
+# Esta es la clase del archivo "resizer_app_class.py"
 
 class ResizerApp(ttk.Window):
     
@@ -87,7 +89,7 @@ class ResizerApp(ttk.Window):
             # Si falla, la app continúa sin icono
         # --- FIN DE LA CORRECCIÓN ---
 
-        self.geometry("1000x800")
+        self.geometry("800x600")
         self.resizable(False, False)
         
         # Diccionario "traductor": Nombre Bonito -> Nombre Real 
@@ -111,9 +113,6 @@ class ResizerApp(ttk.Window):
         
         # 5. Iniciar el "oyente" de la cola de logs (¡UNA SOLA VEZ!)
         self.poll_log_queue()
-        
-        # --- CÓDIGO DUPLICADO ELIMINADO ---
-        # He borrado las líneas duplicadas que tenías aquí y que rompían la app
         
     def apply_custom_styles(self):
         """Aplica los estilos morados personalizados al tema actual."""
@@ -222,7 +221,7 @@ class ResizerApp(ttk.Window):
         tree_frame.pack(fill=BOTH, expand=YES, pady=5)
         
         cols = ("Nombre", "URL")
-        self.tree = ttk.Treeview(tree_frame, columns=cols, show="headings", height=8) # He bajado la altura un poco
+        self.tree = ttk.Treeview(tree_frame, columns=cols, show="headings", height=8)
         self.tree.heading("Nombre", text="Nombre")
         self.tree.heading("URL", text="URL")
         self.tree.column("Nombre", width=200, stretch=NO)
@@ -253,7 +252,7 @@ class ResizerApp(ttk.Window):
         log_frame = ttk.Frame(main_frame)
         log_frame.pack(fill=BOTH, expand=YES, side=BOTTOM, pady=5)
 
-        self.log_text = ttk.Text(log_frame, height=5, state=DISABLED, width=80) # Altura reducida
+        self.log_text = ttk.Text(log_frame, height=5, state=DISABLED, width=80)
         log_scroll = ttk.Scrollbar(log_frame, orient=VERTICAL, command=self.log_text.yview)
         self.log_text.configure(yscrollcommand=log_scroll.set)
         self.log_text.pack(side=LEFT, fill=BOTH, expand=YES)
@@ -335,7 +334,7 @@ class ResizerApp(ttk.Window):
                 if msg == "!!PROCESSING_DONE!!":
                     self.is_processing = False
                     self.start_button.config(text="Iniciar Proceso", state=NORMAL)
-                    self.log_message("\n ✦¡Proceso completado!✦", "success!!")
+                    self.log_message("\n🎉 ¡Proceso completado!", "success")
                 else:
                     self.log_message(msg, style)
                     
@@ -406,7 +405,7 @@ class ResizerApp(ttk.Window):
         self.log_queue.put(("!!PROCESSING_DONE!!", "default"))
 
 
-# --- PUNTO DE ENTRADA ---
+# --- 4. PUNTO DE ENTRADA (Al final de todo) ---
 if __name__ == "__main__":
     app = ResizerApp()
     app.mainloop()
